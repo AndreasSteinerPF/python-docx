@@ -16,6 +16,9 @@ from docx.text.font import Font
 from docx.text.pagebreak import RenderedPageBreak
 
 if TYPE_CHECKING:
+    from pptx.chart.data import ChartData
+    from pptx.enum.chart import XL_CHART_TYPE
+
     import docx.types as t
     from docx.enum.text import WD_UNDERLINE
     from docx.oxml.text.run import CT_R, CT_Text
@@ -55,6 +58,15 @@ class Run(StoryChild):
             br.type = type_
         if clear is not None:
             br.clear = clear
+
+    def add_chart(self, chart_type: XL_CHART_TYPE, cx: Length, cy: Length, chart_data: ChartData):
+        """
+        Return an |InlineShape| instance containing the chart, added to the
+        end of this run.
+        """
+        inline, chart = self.part.new_chart_inline(chart_type, cx, cy, chart_data)
+        self._r.add_drawing(inline)
+        return chart
 
     def add_picture(
         self,

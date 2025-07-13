@@ -23,6 +23,7 @@ from docx.oxml.shape import (
     CT_PositiveSize2D,
     CT_ShapeProperties,
     CT_Transform2D,
+    CT_Chart,
 )
 from docx.oxml.shared import CT_DecimalNumber, CT_OnOff, CT_String
 from docx.oxml.text.hyperlink import CT_Hyperlink
@@ -50,6 +51,7 @@ register_element_cls("a:graphic", CT_GraphicalObject)
 register_element_cls("a:graphicData", CT_GraphicalObjectData)
 register_element_cls("a:off", CT_Point2D)
 register_element_cls("a:xfrm", CT_Transform2D)
+register_element_cls("c:chart", CT_Chart)
 register_element_cls("pic:blipFill", CT_BlipFillProperties)
 register_element_cls("pic:cNvPr", CT_NonVisualDrawingProps)
 register_element_cls("pic:nvPicPr", CT_PictureNonVisual)

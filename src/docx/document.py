@@ -15,6 +15,9 @@ from docx.shared import ElementProxy, Emu, Inches, Length
 from docx.text.run import Run
 
 if TYPE_CHECKING:
+    from pptx.chart.data import ChartData
+    from pptx.enum.chart import XL_CHART_TYPE
+
     import docx.types as t
     from docx.comments import Comment, Comments
     from docx.oxml.document import CT_Body, CT_Document
@@ -156,6 +159,34 @@ class Document(ElementProxy):
         table = self._body.add_table(rows, cols, self._block_width)
         table.style = style
         return table
+
+    def add_chart(
+        self,
+        chart_type: XL_CHART_TYPE,
+        x: int | None,
+        y: int | None,
+        cx: Length,
+        cy: Length,
+        chart_data: ChartData,
+        paragraph: Paragraph | None = None,
+    ):
+        """
+        Add a new chart of *chart_type* to the slide, positioned at the
+        specified paragraph (if one is provided, otherwise a new one is inserted),
+        having size (*cx*, *cy*), and depicting *chart_data*.
+        *chart_type* is one of the :ref:`XlChartType` enumeration values.
+        *chart_data* is a |ChartData| object populated with the categories
+        and series values for the chart. Note that a |GraphicFrame| shape
+        object is returned, not the |Chart| object contained in that graphic
+        frame shape. The chart object may be accessed using the :attr:`chart`
+        property of the returned |GraphicFrame| object.
+        """
+        _paragraph = paragraph
+        if not _paragraph:
+            _paragraph = self.add_paragraph()
+
+        run = _paragraph.add_run()
+        return run.add_chart(chart_type, cx, cy, chart_data)
 
     @property
     def comments(self) -> Comments:

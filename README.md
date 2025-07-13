@@ -1,6 +1,8 @@
 # python-docx
 
-*python-docx* is a Python library for reading, creating, and updating Microsoft Word 2007+ (.docx) files.
+*python-docx-valutico* is a Python library for reading, creating, and updating Microsoft Word 2007+ (.docx) files.
+
+This is basically the same as *python-docx*, but with added support for charts.
 
 ## Installation
 

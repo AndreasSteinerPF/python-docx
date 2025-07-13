@@ -4,12 +4,20 @@ from __future__ import annotations
 
 from typing import IO, TYPE_CHECKING, Tuple, cast
 
+from pptx.parts.chart import ChartPart
+
 from docx.opc.constants import RELATIONSHIP_TYPE as RT
 from docx.opc.part import XmlPart
 from docx.oxml.shape import CT_Inline
 from docx.shared import Length, lazyproperty
 
+from ..oxml.shape import CT_InlineChart
+
 if TYPE_CHECKING:
+    from pptx.chart.chart import Chart
+    from pptx.chart.data import ChartData
+    from pptx.enum.chart import XL_CHART_TYPE
+
     from docx.enum.style import WD_STYLE_TYPE
     from docx.image.image import Image
     from docx.parts.document import DocumentPart
@@ -72,6 +80,27 @@ class StoryPart(XmlPart):
         cx, cy = image.scaled_dimensions(width, height)
         shape_id, filename = self.next_id, image.filename
         return CT_Inline.new_pic_inline(shape_id, rId, filename, cx, cy)
+
+    def _get_or_add_chart(
+        self, chart_type: XL_CHART_TYPE, chart_data: ChartData
+    ) -> Tuple[str, Chart]:
+        """
+        Return an (rId, chart) 2-tuple for the chart.
+        Access the chart properties like description in python-pptx documents.
+        """
+        chart_part = ChartPart.new(chart_type, chart_data, self.package)  # type: ignore
+        rId = self.relate_to(chart_part, RT.CHART)  # type: ignore
+        return rId, chart_part.chart
+
+    def new_chart_inline(
+        self, chart_type: XL_CHART_TYPE, cx: Length, cy: Length, chart_data: ChartData
+    ) -> tuple[CT_InlineChart, Chart]:
+        """
+        Return a newly-created `w:inline` element containing the chart
+        with width *cx* and height *y*
+        """
+        rId, chart = self._get_or_add_chart(chart_type, chart_data)
+        return CT_InlineChart.new_inline_chart(rId, cx, cy), chart
 
     @property
     def next_id(self) -> int:
