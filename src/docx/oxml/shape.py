@@ -62,6 +62,7 @@ class CT_GraphicalObjectData(BaseOxmlElement):
     """``<a:graphicData>`` element, container for the XML of a DrawingML object."""
 
     pic: CT_Picture = ZeroOrOne("pic:pic")  # pyright: ignore[reportAssignmentType]
+    cChart: CT_Chart = ZeroOrOne("c:chart")  # pyright: ignore[reportAssignmentType]
     uri: str = RequiredAttribute("uri", XsdToken)  # pyright: ignore[reportAssignmentType]
 
 
